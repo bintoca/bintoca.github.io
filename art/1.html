@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>bintoca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        a {
+            color: #0567d6;
+            text-decoration: none;
+        }
+
+        header {
+            display: flex;
+            padding: .75em 1.2em;
+            background-color: #333;
+            color: #FFF
+        }
+
+        header a {
+            color: #FFF;
+        }
+
+        footer {
+            display: flex;
+        }
+
+        footer ul {
+            list-style: none;
+            margin: 2em auto;
+            padding: 0;
+        }
+
+        .b {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .btn {
+            background-color: #ccc;
+            margin: 5px;
+            padding: 10px;
+        }
+
+        .btn:hover {
+            background-color: #bbb;
+        }
+
+        canvas,
+        body,
+        .b {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+    </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+            self.caches.open('cache1').then(function (cache) {
+                const urls = []
+                let p = ''
+                for (let s of location.pathname.split('/')) {
+                    if (s) {
+                        p += '/' + s
+                        urls.push(p)
+                    }
+                }
+                for (let u of urls) {
+                    cache.match(u).then(x => { if (!x) { cache.add(u) } })
+                }
+            })
+        }
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJPE524SDM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-WJPE524SDM');
+    </script>
+</head>
+
+<body>
+    <div class="b" style="flex-direction: row;border-bottom: solid 1px #ccc;" id="h1">
+        <div style="flex: 1 1 auto;width: 60px;"></div>
+        <div style="flex: 2 1 auto;">
+            <h1 style="margin: 0 auto;padding:3px;font-size:1.5em;text-align: center;">binary musings</h1>
+        </div>
+        <div style="flex: 1 1 auto;width: 60px;">
+            <div style="display: flex; flex-direction: row-reverse;height: 100%;">
+                <div style="display: flex; flex-direction:column;height: 100%;margin-right: 15px;" id="ham">
+                    <div style="flex: 2 1;"></div>
+                    <div style="flex: 0.8 1;background-color: #333;width: 24px;"></div>
+                    <div style="flex: 1 1;"></div>
+                    <div style="flex: 0.8 1;background-color: #333;width: 24px;"></div>
+                    <div style="flex: 2 1;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="b" id="op" style="display: none;">
+        <div style="margin: 1em auto; text-align:center">Shareable link with current state</div>
+        <div style="margin: 1em auto; text-align:center"><input id="lin" style="width: 70%;" /></div>
+        <div style="margin: 1em auto; text-align:center"><button id="sh">
+                <div style="padding: 1em;">Copy to clipboard</div>
+            </button></div>
+    </div>
+    <div class="b" id="c"></div>
+    <div class="b" id="b">
+        <div id="s" style="display: flex;margin:0 5px"></div>
+        <div style="display: flex;width:100%">
+            <div style="flex: 2 1 auto;" class="btn" id="b0">
+                <div style="background-color: black;height:3px;width:20px;margin: 8px auto;"></div>
+            </div>
+            <div style="flex: 2 1 auto;" class="btn" id="b1">
+                <div style="background-color: black;height:20px;width:20px;margin: 0 auto;"></div>
+            </div>
+            <div style="flex: 2 1 auto;" class="btn" id="bb">
+            </div>
+        </div>
+    </div>
+    <script>
+        const can = document.createElement('canvas')
+        const h1 = document.getElementById('h1')
+        const b = document.getElementById('b')
+        const b0 = document.getElementById('b0')
+        const b1 = document.getElementById('b1')
+        const bb = document.getElementById('bb')
+        const s = document.getElementById('s')
+        const ham = document.getElementById('ham')
+        const op = document.getElementById('op')
+        const c = document.getElementById('c')
+        const sh = document.getElementById('sh')
+        const lin = document.getElementById('lin')
+        let w
+        let h
+        let a = []
+        if (window.location.hash.length > 2) {
+            try {
+                a = JSON.parse(atob(window.location.hash.replace('#', ''))).a
+            }
+            catch { }
+        }
+        can.addEventListener('click', function (event) {
+            event.preventDefault()
+        })
+        b.addEventListener('click', function (event) {
+            event.preventDefault()
+        })
+        h1.addEventListener('click', function (event) {
+            event.preventDefault()
+        })
+        ham.addEventListener('click', function (event) {
+            event.preventDefault()
+            op.style.display = op.style.display == 'none' ? 'block' : 'none'
+            c.style.display = c.style.display == 'none' ? 'flex' : 'none'
+            b.style.display = b.style.display == 'none' ? 'flex' : 'none'
+            lin.value = window.location.href + '#' + btoa(JSON.stringify({ a }))
+        })
+        sh.addEventListener('click', function (event) {
+            navigator.clipboard.writeText(lin.value)
+        })
+        const maxWidth = 800
+        function resize() {
+            w = window.innerWidth > maxWidth ? maxWidth : window.innerWidth
+            render()
+            h = window.innerHeight - h1.offsetHeight - b.offsetHeight
+            can.width = w
+            can.height = h
+        }
+        window.addEventListener('resize', resize)
+        const render = () => {
+            const da = []
+            for (let i = 0; i < 30; i++) {
+                const d = document.createElement('div')
+                da.push(d)
+                const x = (w - 10) / 30 - 2
+                d.style.flex = '1 1'
+                d.style.margin = '1px'
+                if (a[i] === '0') {
+                    d.style.backgroundColor = 'black'
+                    d.style.height = '3px'
+                }
+                else if (a[i] === '1') {
+                    d.style.backgroundColor = 'black'
+                    d.style.height = x + 'px'
+                }
+                else {
+                    d.style.backgroundColor = '#CCC'
+                    d.style.height = '3px'
+                    d.style.marginBottom = (x - 2) + 'px'
+                }
+            }
+            s.replaceChildren(...da)
+        }
+        resize()
+        c.appendChild(can)
+        b0.onclick = () => {
+            if (a.length < 30) {
+                a.push('0')
+            }
+            render()
+        }
+        b1.onclick = () => {
+            if (a.length < 30) {
+                a.push('1')
+            }
+            render()
+        }
+        bb.onclick = () => {
+            a.pop()
+            render()
+        }
+    </script>
+</body>
+
+</html>

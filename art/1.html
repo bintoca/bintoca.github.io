@@ -62,6 +62,23 @@
             -webkit-user-select: none;
             user-select: none;
         }
+
+        .x1 {
+            height: 20px;
+            width: 2px;
+            margin: 0 auto;
+            background-color: black;
+            transform: rotate(45deg);
+            Z-index: 1;
+        }
+
+        .x2 {
+            height: 20px;
+            width: 2px;
+            background-color: black;
+            transform: rotate(90deg);
+            Z-index: 2;
+        }
     </style>
     <script>
         if ('serviceWorker' in navigator) {
@@ -115,11 +132,25 @@
         <div style="margin: 1em auto; text-align:center"><button id="sh">
                 <div style="padding: 1em;">Copy to clipboard</div>
             </button></div>
+        <div style="margin: 2em auto; text-align:center">© 2022. This work is licensed under a <br />
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license.</a>
+        </div>
+        <div style="margin: 2em auto; text-align:center"><a href="/">bintoca</a> / <a href="/art/index.html">art</a>
+        </div>
+        <div style="margin: 1em auto; text-align:center"><a href="https://docs.bintoca.com/policy/terms">Terms</a></div>
+        <div style="margin: 1em auto; text-align:center"><a href="https://docs.bintoca.com/policy/privacy">Privacy</a>
+        </div>
+        <div style="margin: 1em auto; text-align:center"><a href="https://github.com/bintoca">GitHub</a></div>
+        <div style="margin: 1em auto; text-align:center"><a href="https://twitter.com/AlexTWorld">Twitter</a></div>
     </div>
     <div class="b" id="c"></div>
     <div class="b" id="b">
         <div id="s" style="display: flex;margin:0 5px"></div>
         <div style="display: flex;width:100%">
+            <select style="margin: 5px;" id="mode">
+                <option value="1">Mode 1</option>
+                <option value="2">Mode 2</option>
+            </select>
             <div style="flex: 2 1 auto;" class="btn" id="b0">
                 <div style="background-color: black;height:3px;width:20px;margin: 8px auto;"></div>
             </div>
@@ -127,6 +158,9 @@
                 <div style="background-color: black;height:20px;width:20px;margin: 0 auto;"></div>
             </div>
             <div style="flex: 2 1 auto;" class="btn" id="bb">
+                <div class="x1">
+                    <div class="x2"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -143,12 +177,21 @@
         const c = document.getElementById('c')
         const sh = document.getElementById('sh')
         const lin = document.getElementById('lin')
+        const mode = document.getElementById('mode')
         let w
         let h
         let a = []
         if (window.location.hash.length > 2) {
             try {
-                a = JSON.parse(atob(window.location.hash.replace('#', ''))).a
+                const d = JSON.parse(atob(window.location.hash.replace('#', '')))
+                if (Array.isArray(d.a) && d.a.length <= 30 && d.a.every(x => x === '0' || x === '1')) {
+                    a = d.a
+                }
+                for (let x of mode.children) {
+                    if (x.value === d.m) {
+                        mode.value = d.m
+                    }
+                }
             }
             catch { }
         }
@@ -166,7 +209,8 @@
             op.style.display = op.style.display == 'none' ? 'block' : 'none'
             c.style.display = c.style.display == 'none' ? 'flex' : 'none'
             b.style.display = b.style.display == 'none' ? 'flex' : 'none'
-            lin.value = window.location.href + '#' + btoa(JSON.stringify({ a }))
+            const hash = window.location.href.indexOf('#')
+            lin.value = (hash == -1 ? window.location.href : window.location.href.substring(0, hash)) + '#' + btoa(JSON.stringify({ a, m: mode.value }))
         })
         sh.addEventListener('click', function (event) {
             navigator.clipboard.writeText(lin.value)
@@ -191,6 +235,8 @@
                 if (a[i] === '0') {
                     d.style.backgroundColor = 'black'
                     d.style.height = '3px'
+                    d.style.marginTop = (x - 2) / 2 + 'px'
+                    d.style.marginBottom = (x - 2) / 2 + 'px'
                 }
                 else if (a[i] === '1') {
                     d.style.backgroundColor = 'black'

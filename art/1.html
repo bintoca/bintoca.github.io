@@ -166,6 +166,7 @@
     </div>
     <script>
         const can = document.createElement('canvas')
+        const tx = can.getContext('2d')
         const h1 = document.getElementById('h1')
         const b = document.getElementById('b')
         const b0 = document.getElementById('b0')
@@ -249,6 +250,29 @@
                 }
             }
             s.replaceChildren(...da)
+            if (mode.value == '1') {
+                const a1 = []
+                let x = 10, y = 10
+                for (let i = 0; i < 30; i++) {
+                    if (a[i] === undefined) {
+                        break
+                    }
+                    if (a[i] == '0') {
+                        x += 10
+                    }
+                    else {
+                        y += 10
+                    }
+                    a1.push({ x, y })
+                }
+                tx.clearRect(0, 0, w, h)
+                tx.beginPath()
+                tx.lineTo(10, 10)
+                for (let z of a1) {
+                    tx.lineTo(z.x, z.y)
+                }
+                tx.stroke()
+            }
         }
         resize()
         c.appendChild(can)

@@ -36,26 +36,9 @@
             list-style: none;
             margin: 2em auto;
             padding: 0;
+            text-align: center;
         }
     </style>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-            self.caches.open('cache1').then(function (cache) {
-                const urls = []
-                let p = ''
-                for (let s of location.pathname.split('/')) {
-                    if (s) {
-                        p += '/' + s
-                        urls.push(p)
-                    }
-                }
-                for (let u of urls) {
-                    cache.match(u).then(x => { if (!x) { cache.add(u) } })
-                }
-            })
-        }
-    </script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJPE524SDM"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -74,13 +57,39 @@
             <div></div>
         </div>
     </header>
-    <div style="margin: 2em auto; text-align: center;">Working on a unification of programming languages, databases and network protocols</div>
+    <div style="margin: 2em auto; width: 600px;">
+        <h2>Alex Thompson</h2>
+        <div>
+            Software engineer and consultant with over 25 years of experience pushing the envelope of technical capabilities.
+        </div>
+        <div style="padding-top: 1em; font-weight: bold;">
+            Tell me about your hardest problems: <span id="x1"></span>
+        </div>
+        <h2>Precision</h2>
+        <div>
+            The cornerstone of great solutions is knowing exactly how things work. 
+        </div>
+        <h2>Imagination</h2>
+        <div>
+            Gaining advantage means doing things no one else is doing.
+        </div>
+        <h2>Value</h2>
+        <div>
+            A relentless focus on only delivering what is needed. 
+        </div>
+    </div>
     <footer>
         <ul>
             <li><a href="https://github.com/bintoca">GitHub</a></li>
-            <li><a href="https://twitter.com/AlexTWorld">Twitter</a></li>
         </ul>
     </footer>
+    <script>
+        var x1 = document.getElementById("x1")
+        //var ss = s.split('').map(x => x.codePointAt(0) + 2).map(x => String.fromCodePoint(x)).join('')
+        //console.log(ss)
+        var ss = '>c"jtgh?$ocknvq<cngzBdkpvqec0eqo$@cngzBdkpvqec0eqo>1c@'
+        x1.innerHTML = ss.split('').map(x => x.codePointAt(0) - 2).map(x => String.fromCodePoint(x)).join('')
+    </script>
 </body>
 
 </html>
